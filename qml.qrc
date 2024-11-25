@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>NewTaskCreate.qml</file>
+        <file>MainScreen.qml</file>
+        <file>Settings.qml</file>
+        <file>StartScreen.qml</file>
+        <file>Images/178-1787361_cartoon-drawing-illustration-cartoon-mountain.png</file>
+        <file>Images/1626661061_preview_sun.png</file>
+        <file>Images/27947ac14af627677a43510cf7ccfe70.gif</file>
+        <file>Images/Animation - 1732550039584.gif</file>
+        <file>Images/Animation - 1732550269913.gif</file>
+        <file>Images/Animation - 1732552377190.gif</file>
+    </qresource>
+</RCC>
