@@ -2,8 +2,10 @@ import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
 import QtGraphicalEffects 1.12
+import QtQuick.Layouts 1.3
 
 Window {
+
 
     visible: true
     width: 480
@@ -37,7 +39,6 @@ Window {
                 easing.type: Easing.InOutSine
             }
         }
-
 
         Image {
             id: mountainsPng
@@ -76,7 +77,7 @@ Window {
         Text {
             id: name2
             x: 76
-            y: 312
+            y: 311
             color: "#e87c30"
             text: qsTr("WorkUp")
             font.family: "Kaph"
@@ -188,7 +189,6 @@ Window {
         visible: false
         ListModel{
             id: todoModel
-
         }
 
         Rectangle {
@@ -197,7 +197,7 @@ Window {
             y: -6
             width: 480
             height: 800
-            color: "#1c1b1b"
+            color: "lightgrey"
 
             ProgressBar {
                 id: progressBar
@@ -229,7 +229,7 @@ Window {
                 width: 451
                 height: 62
                 background: Rectangle{
-                    color: "darkblue"
+                    color: "orange"
                     radius: 20
                 }
             }
@@ -237,16 +237,17 @@ Window {
             ListView {
                 id: listView1
                 x: 33
-                y: 185
-                width: 420
-                height: 157
+                y: 135
+                width: 413
+                height: 259
                 model: todoModel
                 spacing: 10
+                clip: true
                 delegate: Rectangle {
                     id: dlg
                     x: 5
                     radius: 10
-                    width: parent.width
+                    width: parent.width-10
                     height: 40
 
                     property string title
@@ -254,6 +255,7 @@ Window {
 
                     title: _title
                     description: _des
+
 
                     Column{
                         anchors.fill: parent
@@ -275,29 +277,59 @@ Window {
                             font.family: "Courier"
                             visible: false
                         }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
 
-                        CheckBox{
-                            rightPadding: 10
-                            width: 20
-                            height: 20
-                            onCheckStateChanged: {
-                                tccomp = tccomp-1+2*checked
-                                console.log(tccomp)
-                                progressBar.value = tccomp/tc
-                            }
-
+                        onClicked: {
+                            console.log(dlg.description)
+                            scrText.text = dlg.description
                         }
-
-
-                        MouseArea {
+                    }
+                    CheckBox{
+                        anchors.left: dlg.left
+                        anchors.leftMargin: 10
+                        anchors.top: dlg.top
+                        anchors.topMargin: 10
+                        width: 20
+                        height: 20
+                        onCheckStateChanged: {
+                            tccomp = tccomp-1+2*checked
+                            console.log(tccomp)
+                            progressBar.value = tccomp/tc
+                        }
+                    }
+                    Rectangle{
+                        width: 35
+                        height: 35
+                        radius: 10
+                        color: "darkred"
+                        anchors.right: dlg.right
+                        anchors.rightMargin: 2.5
+                        anchors.top: dlg.top
+                        anchors.topMargin: 2.5
+                        MouseArea{
                             anchors.fill: parent
-                            anchors.leftMargin: 30
                             onClicked: {
-                                console.log(dlg.description)
-                                scrText.text = dlg.description
+                                tc = tc - 1
+                                delanim.start()
+                                scrText.text = ""
                             }
                         }
                     }
+                    NumberAnimation {
+                        id: delanim
+                        target: dlg
+                        property: "scale"
+                        from: 1
+                        to: 0
+                        duration: 200
+                        easing.type: Easing.InOutSine
+                        onStopped: {
+                                        todoModel.remove(index)
+                                   }
+                    }
+
 
                 }
 
@@ -305,7 +337,7 @@ Window {
 
             ScrollView {
                 background: Rectangle{
-                    color: "#808080"
+                    color: "white"
                     radius: 10
                 }
                 id: scrollView
@@ -324,8 +356,8 @@ Window {
                     font.family: "Courier"
                     font.pixelSize: 15
                     font.bold: true
-                    text: "textbjdfhbjdbfjdgdbfjgbdfhgbjdfhgbfgjdfjgbdjfbgdjfgbdhfgjdbfjgbjdbfhgbjdbgbdjfgbdjfhgbdjfgbdjfhbgdhbgjdbgjdgdhbgjdb"
-                    color: "white"
+                    text: ""
+                    color: "black"
 
                 }
             }
@@ -336,7 +368,7 @@ Window {
             y: 9
             width: 112
             height: 50
-            color: "#020257"
+            color: "darkorange"
             radius: 20
             anchors.verticalCenterOffset: 333
             anchors.centerIn: parent
@@ -365,7 +397,7 @@ Window {
             width: 145
             height: 14
             color: "#ffffff"
-            text: qsTr("Username")
+            text: usernameField.text
             horizontalAlignment: Text.AlignHCenter
             font.underline: true
             font.family: "Courier"
@@ -563,15 +595,159 @@ Window {
     Settings{
         id: settings
         visible: false
+        background: Rectangle{
+            color: "#1c1b1b"
+        }
+
+
+        Text {
+            id: element
+            x: 144
+            y: 29
+            color: "#ffffff"
+            text: qsTr("SETTINGS")
+            font.family: "Courier"
+            font.pixelSize: 40
+        }
+
+        TextField {
+            id: usernameField
+            x: 140
+            y: 87
+            placeholderText: qsTr("Username")
+        }
+
+        ComboBox {
+            id: categoriesBox
+            x: 140
+            y: 159
+            width: 200
+            height: 40
+            model: ListModel{
+                id: categoryModel
+                ListElement{
+                    text: "Quickly"
+                }
+                ListElement{
+                    text: "Study"
+                }
+                ListElement{
+                    text: "Work"
+                }
+                ListElement{
+                    text: "Other"
+                }
+        }
+
+        Button {
+            id: button
+            x: 234
+            y: -72
+            width: 43
+            height: 40
+            text: qsTr("ok")
+        }
+
+        Text {
+            id: createCategoryLink
+            x: 0
+            y: 49
+            color: "#9714cd"
+            text: qsTr("Create Category")
+            font.family: "Courier"
+            font.underline: true
+            font.pixelSize: 12
+            Button{
+                opacity: 0
+            }
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    console.log("clicked")
+                }
+            }
+        }
+
+        ComboBox {
+            id: comboBox1
+            x: 0
+            y: 87
+            width: 200
+            height: 40
+            model: ListModel{
+                ListElement{
+                    text: "Started"
+                }
+                ListElement{
+                    text: "In Process"
+                }
+                ListElement{
+                    text: "Finished"
+                }
+            }
+        }
+
+        TextEdit {
+            id: createStatusLink
+            x: 0
+            y: 133
+            width: 80
+            height: 20
+            color: "#a108bc"
+            text: qsTr("Create Status")
+            font.underline: true
+            font.family: "Courier"
+            selectionColor: "#9c25da"
+            font.pixelSize: 12
+        }
+
+        Button {
+            id: deleteAllTasksBut
+            x: 3
+            y: 159
+            width: 197
+            height: 40
+            text: qsTr("Delete All Tasks")
+            onClicked: {
+                tc = 0
+                todoModel.clear()            }
+        }
+
+        Rectangle{
+            height: 50
+            width: 200
+            anchors.centerIn: parent;
+            radius: 20
+            anchors.verticalCenterOffset: 333
+            anchors.horizontalCenterOffset: -114
+            color: "darkred"
+            Text {
+                id: textSettings
+                text: qsTr("Cancel")
+                font.family: "Courier"
+                font.pointSize: 15
+                anchors.centerIn: parent
+                color: "white"
+            }
+            Button{
+                anchors.fill: parent
+                onClicked:
+                {
+                    stackView.pop()
+                }
+                opacity: 0
+            }
+        }
+        }
     }
 }
 
 /*##^##
 Designer {
-    D{i:8;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:10;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
+    D{i:8;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:9;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
 D{i:11;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:18;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
-D{i:9;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:21;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
-D{i:23;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:22;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
-D{i:20;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
+D{i:10;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:20;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
+D{i:22;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:24;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
+D{i:23;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}D{i:21;anchors_height:166;anchors_width:166;anchors_x:157;anchors_y:194}
 }
 ##^##*/
